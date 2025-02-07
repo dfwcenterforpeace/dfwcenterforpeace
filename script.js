@@ -1,4 +1,4 @@
-const contentJsonUrl = "contentA.json"; //Change it after testing the application to content.json
+const contentJsonUrl = "contentB.json"; //Change it after testing the application to content.json
 let contentList = [];
 let allContentIndex = 0;
 let recordIndex = 0;
