@@ -207,8 +207,8 @@ async function renderPage() {
     const page = await pdfDoc.getPage(pdfCurrentPage);
 
     const container = document.getElementById("pdfContainer");
-    const containerWidth = container.clientWidth * 0.9; // Set max width to 90% of the container
-    const containerHeight = container.clientHeight * 0.9; // Set max height to 90% of the container
+    const containerWidth = container.clientWidth * 1; // Set max width to 90% of the container
+    const containerHeight = container.clientHeight * 1; // Set max height to 90% of the container
 
     // Get PDF viewport and calculate scale based on width & height
     const initialViewport = page.getViewport({ scale: 1 });
