@@ -6,6 +6,13 @@ let pdfDoc = null;
 let currentPage = 1;
 let userInteracted = false; // Track if user interacted  
 
+let courseDisplayIntervalTime = 25000; // Display Interval for Courses. 
+let pdfDisplayIntervalTime = 25000
+
+//Variables for tracking course displays per contentDefinition in Content.json file.
+let courseDisplayCurrentIndex = 0;
+let allCoursesDisplayed = null;
+
 document.body.addEventListener("click", function () {
     userInteracted = true;
 }, { once: true });
@@ -93,11 +100,9 @@ function loadNextContent() {
         loadPdf(currentContent.src);
     } else if (currentContent.type === "content") {
         document.getElementById("courseContainer").style.display = "flex";
+        courseDisplayCurrentIndex = 0;
+        allCoursesDisplayed = null;
         displayContentAsCards(currentContent.data);
-            setTimeout(() => {
-            currentIndex = (currentIndex + 1) % contentList.length;
-            loadNextContent();
-        }, 30000);  // Increased to 10 seconds
     } else {
         console.warn("Unknown content type:", currentContent.type);
     }
@@ -109,45 +114,63 @@ function loadNextContent() {
 }
 
 function displayContentAsCards(dataList) {
-    let cardsHtml = '';
+    if (dataList.length === 0) return;
 
-    const rows = Math.ceil(dataList.length / 2);
-    for (let i = 0; i < rows; i++) {
-        cardsHtml += '<div class="row mb-4 d-flex justify-content-center">'; // Center align row
-        for (let j = 0; j < 2; j++) {
-            const content = dataList[i * 2 + j];
-            if (content) {
-                cardsHtml += `
-                    <div class="col-md-4 d-flex justify-content-center align-items-center">
-                        <div class="card course-card" style="background-image: url('${content.backgroundimg}');">
-                            <h4 class="card-title">${content.title}</h4>
-                            <div class="card-body">
-                                <p class="card-text"><strong>Type:</strong> ${content.type}</p>
-                                <p class="card-text"><strong>Location:</strong> ${content.location}</p>
-                                <p class="card-text"><strong>Instructors:</strong> ${content.instructors}</p>
-                                <p class="card-text"><strong>Timings:</strong></p>
-                                <ul class="list-unstyled card-text">
-                                    ${(Array.isArray(content.timings) ? content.timings : []).map(time => `<li>${time}</li>`).join('')}
-                                </ul>     
-                                <div class="qrcode-container d-flex justify-content-center">
-                                    <div id="qrcode-${content.id}" class="card-img mt-3 d-flex justify-content-center"></div>
-                                </div>
-                            </div>                            
-                        </div>
+    const totalCourses = dataList.length;
+    const coursesToShow = 3;
+
+    function updateDisplay() {
+        let cardsHtml = '';
+
+        for (let i = 0; i < coursesToShow; i++) {
+            const index = courseDisplayCurrentIndex + i;
+            if (index >= totalCourses) break; // Stop if out of bounds
+            const content = dataList[index];
+
+            cardsHtml += `
+                <div class="col-md-4 d-flex justify-content-center align-items-center">
+                    <div class="card course-card" style="background-image: url('${content.backgroundimg}');">
+                        <h4 class="card-title">${content.title}</h4>
+                        <div class="card-body">
+                            <p class="card-text"><strong>Type:</strong> ${content.type}</p>
+                            <p class="card-text"><strong>Location:</strong> ${content.location}</p>
+                            <p class="card-text"><strong>Instructors:</strong> ${content.instructors}</p>
+                            <p class="card-text"><strong>Timings:</strong></p>
+                            <ul class="list-unstyled card-text">
+                                ${(Array.isArray(content.timings) ? content.timings : []).map(time => `<li>${time}</li>`).join('')}
+                            </ul>     
+                            <div class="qrcode-container d-flex justify-content-center">
+                                <div id="qrcode-${content.id}" class="card-img mt-3  d-flex justify-content-center"></div>
+                            </div>
+                        </div>                            
                     </div>
-                `;
-            }
+                </div>
+            `;
         }
-        cardsHtml += '</div>'; // End row
+
+        //document.getElementById("courseContainer").innerHTML = `<div class="row mb-4 d-flex justify-content-center">${cardsHtml}</div>`;
+        document.getElementById("courseContainer").innerHTML = cardsHtml;
+
+        // Generate QR codes
+        for (let i = 0; i < coursesToShow; i++) {
+            const index = courseDisplayCurrentIndex + i;
+            if (index >= totalCourses) break;
+            generateQRCode(dataList[index].details_link, `qrcode-${dataList[index].id}`);
+        }
+
+        // Move to next set of courses
+        courseDisplayCurrentIndex += coursesToShow;
+
+        // Stop the loop when all courses have been displayed
+        if (courseDisplayCurrentIndex >= totalCourses) {
+            clearInterval(allCoursesDisplayed);
+        }
     }
 
-    document.getElementById("courseContainer").innerHTML = cardsHtml;
-
-    // Generate QR codes for each content item
-    dataList.forEach((item) => {
-        generateQRCode(item.details_link, `qrcode-${item.id}`);
-    });
+    updateDisplay(); // Initial display
+    allCoursesDisplayed = setInterval(updateDisplay, courseDisplayIntervalTime); // Update every interval
 }
+
 
 async function loadPdf(pdfUrl) {
     try {
