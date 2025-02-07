@@ -1,0 +1,59 @@
+#videoContainer, #pdfContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: calc(100vh - 250px); /* Adjust height based on header size */
+    position: relative;
+    overflow: hidden; /* Prevents scrolling */
+}
+
+video, canvas, #pdfCanvas {
+    max-width: 100%; /* Prevents oversizing */
+    max-height: 100%; /* Keeps within screen limits */
+    object-fit: contain; /* Ensures proper aspect ratio */
+}
+
+.course-card {
+    width: 100%;
+    min-height: 300px; /* Adjust height as needed */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-radius: 15px; /* Smooth edges */
+    padding: 20px;
+    color: black; /* Text color for contrast */
+    position: relative;
+    overflow: hidden;
+}
+
+.course-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2); /* Dark overlay with 60% transparency */
+    z-index: 1;
+}
+
+.course-card .card-body {
+    position: relative;
+    z-index: 2;
+}
+
+.course-card h5,
+.course-card p {
+    margin-bottom: 10px;
+}
+
+.qrcode-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
