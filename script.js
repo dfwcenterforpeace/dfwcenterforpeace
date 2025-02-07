@@ -3,8 +3,8 @@ let contentList = [];
 let currentIndex = 0;
 let recordIndex = 0;
 let pdfDoc = null;
-let currentPage = 1;
-let userInteracted = false; // Track if user interacted  
+let pdfCurrentPage = 1;
+let userInteracted = false; // Track if user interacted to mute and unmute the video
 
 let courseDisplayIntervalTime = 25000; // Display Interval for Courses. 
 let pdfDisplayIntervalTime = 25000
@@ -184,9 +184,9 @@ async function loadPdf(pdfUrl) {
         pdfDoc = await pdfjsLib.getDocument(pdfUrl).promise;
         //document.getElementById("pdfContainer").innerHTML = ""; // Clear old PDF
         for (let i = 1; i <= pdfDoc.numPages; i++) {
-            currentPage = i;
+            pdfCurrentPage = i;
             await renderPage(i);
-            await new Promise(resolve => setTimeout(resolve, 15000)); // Display each page for 15 sec            
+            await new Promise(resolve => setTimeout(resolve, pdfDisplayIntervalTime)); // Display each page for 15 sec            
         }
         setTimeout(() => {
             currentIndex = (currentIndex + 1) % contentList.length;
@@ -200,11 +200,11 @@ async function loadPdf(pdfUrl) {
 async function renderPage() {
     if (!pdfDoc) return;
 
-    console.log("Rendering page:", currentPage);
+    console.log("Rendering page:", pdfCurrentPage);
 
     const canvas = document.getElementById("pdfCanvas");
     const ctx = canvas.getContext("2d");
-    const page = await pdfDoc.getPage(currentPage);
+    const page = await pdfDoc.getPage(pdfCurrentPage);
 
     const container = document.getElementById("pdfContainer");
     const containerWidth = container.clientWidth * 0.9; // Set max width to 90% of the container
