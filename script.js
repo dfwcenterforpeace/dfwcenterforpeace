@@ -1,6 +1,6 @@
 const contentJsonUrl = "contentA.json"; //Change it after testing the application to content.json
 let contentList = [];
-let currentIndex = 0;
+let allContentIndex = 0;
 let recordIndex = 0;
 let pdfDoc = null;
 let pdfCurrentPage = 1;
@@ -59,7 +59,7 @@ async function fetchContent() {
 
 function loadNextContent() {
     if (contentList.length === 0) return;
-    const currentContent = contentList[currentIndex];
+    const currentContent = contentList[allContentIndex];
 
     /*console.log(currentContent);
     console.log(currentContent.headTitle);
@@ -92,7 +92,7 @@ function loadNextContent() {
         adjustVideoSize(); // Ensure video resizes properly
 
         videoPlayer.onended = () => setTimeout(() => {
-            currentIndex = (currentIndex + 1) % contentList.length;
+            allContentIndex = (allContentIndex + 1) % contentList.length;
             loadNextContent();
         }, 2000);
     } else if (currentContent.type === "pdf") {
@@ -108,7 +108,7 @@ function loadNextContent() {
     }
 
     /*setTimeout(() => {
-        currentIndex = (currentIndex + 1) % contentList.length;
+        allContentIndex = (allContentIndex + 1) % contentList.length;
         loadNextContent();
     }, 10000);*/
 }
@@ -164,6 +164,12 @@ function displayContentAsCards(dataList) {
         // Stop the loop when all courses have been displayed
         if (courseDisplayCurrentIndex >= totalCourses) {
             clearInterval(allCoursesDisplayed);
+
+            //Move to next mainContent
+            setTimeout(() => {
+                allContentIndex = (allContentIndex + 1) % contentList.length;
+                loadNextContent();
+            }, 1000); // Small delay before moving to next content
         }
     }
 
@@ -189,7 +195,7 @@ async function loadPdf(pdfUrl) {
             await new Promise(resolve => setTimeout(resolve, pdfDisplayIntervalTime)); // Display each page for 15 sec            
         }
         setTimeout(() => {
-            currentIndex = (currentIndex + 1) % contentList.length;
+            allContentIndex = (allContentIndex + 1) % contentList.length;
             loadNextContent();
         }, 2000); // Small delay before moving to next content
     } catch (error) {
