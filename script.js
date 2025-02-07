@@ -4,6 +4,12 @@ let currentIndex = 0;
 let recordIndex = 0;
 let pdfDoc = null;
 let currentPage = 1;
+let userInteracted = false; // Track if user interacted  
+
+document.body.addEventListener("click", function () {
+    userInteracted = true;
+}, { once: true });
+
 
 function scheduleMidnightRefresh() {
     const now = new Date();
@@ -70,11 +76,12 @@ function loadNextContent() {
 
         // Wait for metadata to load before playing
         videoPlayer.onloadedmetadata = () => {
-            videoPlayer.muted = false; // Unmute
+            if (userInteracted) {
+              videoPlayer.muted = false; // Unmute
+            }     
             videoPlayer.play();
         };
         
-        videoPlayer.play();
         adjustVideoSize(); // Ensure video resizes properly
 
         videoPlayer.onended = () => setTimeout(() => {
