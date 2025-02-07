@@ -6,8 +6,8 @@ let pdfDoc = null;
 let pdfCurrentPage = 1;
 let userInteracted = false; // Track if user interacted to mute and unmute the video
 
-let courseDisplayIntervalTime = 25000; // Display Interval for Courses. 
-let pdfDisplayIntervalTime = 25000
+let courseDisplayIntervalTime = 25000; // Display Interval for courses. 
+let pdfDisplayIntervalTime    = 25000; // Display Interval for pdfs.
 
 //Variables for tracking course displays per contentDefinition in Content.json file.
 let courseDisplayCurrentIndex = 0;
