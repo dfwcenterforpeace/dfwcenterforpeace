@@ -137,6 +137,13 @@ function displayContentAsCards(dataList) {
 
 async function loadPdf(pdfUrl) {
     try {
+
+        // Clear the canvas before loading a new PDF
+        const canvas = document.getElementById("pdfCanvas");
+        const ctx = canvas.getContext("2d");
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        //Load pdf from url.
         pdfDoc = await pdfjsLib.getDocument(pdfUrl).promise;
         //document.getElementById("pdfContainer").innerHTML = ""; // Clear old PDF
         for (let i = 1; i <= pdfDoc.numPages; i++) {
