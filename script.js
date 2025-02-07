@@ -124,7 +124,7 @@ function displayContentAsCards(dataList) {
                             <div class="card-body">
                                 <p class="card-text"><strong>Type:</strong> ${content.type}</p>
                                 <p class="card-text"><strong>Location:</strong> ${content.location}</p>
-                                <p class="card-text"><strong>Instructor:</strong> ${content.instructors}</p>
+                                <p class="card-text"><strong>Instructors:</strong> ${content.instructors}</p>
                                 <p class="card-text"><strong>Timings:</strong></p>
                                 <ul class="list-unstyled card-text">
                                     ${(Array.isArray(content.timings) ? content.timings : []).map(time => `<li>${time}</li>`).join('')}
