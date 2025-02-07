@@ -67,13 +67,20 @@ function loadNextContent() {
         document.getElementById("videoSource").src = currentContent.src;
         const videoPlayer = document.getElementById("videoPlayer");
         videoPlayer.load();
+
+        // Wait for metadata to load before playing
+        videoPlayer.onloadedmetadata = () => {
+            videoPlayer.muted = false; // Unmute
+            videoPlayer.play();
+        };
+        
         videoPlayer.play();
         adjustVideoSize(); // Ensure video resizes properly
 
         videoPlayer.onended = () => setTimeout(() => {
             currentIndex = (currentIndex + 1) % contentList.length;
             loadNextContent();
-        }, 1500);
+        }, 2000);
     } else if (currentContent.type === "pdf") {
         document.getElementById("pdfContainer").style.display = "flex";
         loadPdf(currentContent.src);
@@ -83,7 +90,7 @@ function loadNextContent() {
             setTimeout(() => {
             currentIndex = (currentIndex + 1) % contentList.length;
             loadNextContent();
-        }, 25000);  // Increased to 10 seconds
+        }, 30000);  // Increased to 10 seconds
     } else {
         console.warn("Unknown content type:", currentContent.type);
     }
@@ -149,12 +156,12 @@ async function loadPdf(pdfUrl) {
         for (let i = 1; i <= pdfDoc.numPages; i++) {
             currentPage = i;
             await renderPage(i);
-            await new Promise(resolve => setTimeout(resolve, 10000)); // Display each page for 5 sec            
+            await new Promise(resolve => setTimeout(resolve, 15000)); // Display each page for 15 sec            
         }
         setTimeout(() => {
             currentIndex = (currentIndex + 1) % contentList.length;
             loadNextContent();
-        }, 3000); // Small delay before moving to next content
+        }, 2000); // Small delay before moving to next content
     } catch (error) {
         console.error("Error loading PDF:", error);
     }
