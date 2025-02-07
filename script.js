@@ -130,7 +130,7 @@ function displayContentAsCards(dataList) {
                                     ${(Array.isArray(content.timings) ? content.timings : []).map(time => `<li>${time}</li>`).join('')}
                                 </ul>     
                                 <div class="qrcode-container d-flex justify-content-center">
-                                    <div id="qrcode-${content.id}" class="card-img mt-3"></div>
+                                    <div id="qrcode-${content.id}" class="card-img mt-3 d-flex justify-content-center"></div>
                                 </div>
                             </div>                            
                         </div>
