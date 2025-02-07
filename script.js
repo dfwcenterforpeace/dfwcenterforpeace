@@ -158,9 +158,6 @@ function displayContentAsCards(dataList) {
             generateQRCode(dataList[index].details_link, `qrcode-${dataList[index].id}`);
         }
 
-        // Move to next set of courses
-        courseDisplayCurrentIndex += coursesToShow;
-
         // Stop the loop when all courses have been displayed
         if (courseDisplayCurrentIndex >= totalCourses) {
             clearInterval(allCoursesDisplayed);
@@ -171,6 +168,9 @@ function displayContentAsCards(dataList) {
                 loadNextContent();
             }, 1000); // Small delay before moving to next content
         }
+
+        // Move to next set of courses
+        courseDisplayCurrentIndex += coursesToShow;
     }
 
     updateDisplay(); // Initial display
